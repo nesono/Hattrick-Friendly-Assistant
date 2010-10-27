@@ -4,8 +4,8 @@
   "description": "Assisting utility to challenge rare countries for friendlies",
   "content_scripts": [
     {
-      "matches": ["http://www*.hattrick.org/Club/Challenges/*"],
-      "js": ["jquery.js", "hfa_main.js"]
+      "matches": ["http://*.hattrick.org/Club/Challenges/"],
+      "js": ["hfa_main.js"]
     }
   ],
   "browser_action": {
