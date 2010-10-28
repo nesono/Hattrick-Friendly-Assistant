@@ -1,5 +1,7 @@
-var header = document.getElementsByTagName('h1')[0];
-header.innerText = "FIXME!";
-header.style.color = "#990000";
+var selectboxes = document.getElementsByName('ctl00$CPMain$ddlPoolLeagues');
+selectboxes.options.length = 0;
 
-//alert( 'Found h1 header: ' + header.innerHTML );
+alert( 'First item: ' + selectboxes.options[0].text );
+/*for( iter=0; iter<selectboxes.length; iter++ )
+{
+}*/
