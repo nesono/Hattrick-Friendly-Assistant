@@ -12,7 +12,8 @@ var selectboxes = document.getElementsByName( 'ctl00$CPMain$ddlPoolLeagues' );
 // sanity check
 if( selectboxes.length != 1 )
 {
-  alert( 'selectbox search error!' );
+  var first_header = document.getElementsByTagName( 'h1' )[0];
+  first_header.innerText = first_header.innerText + ' [hfa on]';
   return;
 }
 
