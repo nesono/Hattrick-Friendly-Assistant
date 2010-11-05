@@ -2,11 +2,11 @@
 function sort_by_nofteams( a, b )
 {
   // get number of teams for entry 'a'
-  var number_a = parseInt( a.text.replace(/.*\((\d+)\)/g, "$1") );
+  number_a = parseInt( a.text.replace(/.*\((\d+)\)/g, "$1") );
   // get number of teams for entry 'b'
-  var number_b = parseInt( b.text.replace(/.*\((\d+)\)/g, "$1") );
+  number_b = parseInt( b.text.replace(/.*\((\d+)\)/g, "$1") );
   // return result
-  var result = number_a - number_b;
+  result = number_a - number_b;
   return result;
 }
 
@@ -31,7 +31,7 @@ var sortlist = new Array(selectbox.options.length);
 var debug_text = 'Old order: ';
 
 // remember text of selected item
-var select_text = selectbox.options[selectedIndex];
+var select_text = selectbox.options[selectbox.options.selectedIndex].text;
 
 // fill array with select elements
 for( iter=0; iter<selectbox.length; iter++ )
@@ -46,12 +46,12 @@ debug_text += '.\nNew order: ';
 
 var selected_index = 0;
 // apply sorting to select box
-for( iter=0; iter<selectbox.length; iter++ )
+for( iter=0; iter<sortlist.length; iter++ )
 {
   selectbox.options[iter] = sortlist[iter];
   debug_text += sortlist[iter].text + ' ';
 
-  if( selected_text = sortlist[iter].text )
+  if( select_text == sortlist[iter].text )
     selected_index = iter;
 }
 
@@ -59,4 +59,3 @@ for( iter=0; iter<selectbox.length; iter++ )
 selectbox.options.selectedIndex = selected_index;
 
 //alert( debug_text )
-
