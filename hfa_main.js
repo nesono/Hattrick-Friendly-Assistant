@@ -10,14 +10,14 @@ function sort_by_nofteams( a, b )
   return result;
 }
 
-// search for pool counrty select box
+// search for pool country select box
 var selectboxes = document.getElementsByName( 'ctl00$CPMain$ddlPoolLeagues' );
 
 // sanity check
 if( selectboxes.length != 1 )
 {
   var first_header = document.getElementsByTagName( 'h1' )[0];
-  first_header.innerText = first_header.innerText + ' [hfa on]';
+  first_header.innerText = first_header.innerText + ' [hfa]';
   return;
 }
 
@@ -30,6 +30,9 @@ var sortlist = new Array(selectbox.options.length);
 // debug output
 var debug_text = 'Old order: ';
 
+// remember text of selected item
+var select_text = selectbox.options[selectedIndex];
+
 // fill array with select elements
 for( iter=0; iter<selectbox.length; iter++ )
 {
@@ -41,14 +44,19 @@ for( iter=0; iter<selectbox.length; iter++ )
 sortlist.sort(sort_by_nofteams);
 debug_text += '.\nNew order: ';
 
+var selected_index = 0;
 // apply sorting to select box
 for( iter=0; iter<selectbox.length; iter++ )
 {
   selectbox.options[iter] = sortlist[iter];
   debug_text += sortlist[iter].text + ' ';
+
+  if( selected_text = sortlist[iter].text )
+    selected_index = iter;
 }
 
-selectbox.options.selectedIndex = 0;
+// recover selected item
+selectbox.options.selectedIndex = selected_index;
 
 //alert( debug_text )
 
