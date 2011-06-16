@@ -22,10 +22,10 @@ function sort_by_divs( a, b )
 function find_pool_select()
 {
   // search for pool country select box
-  var selectboxes = document.getElementsByName( 'ctl00$CPMain$ddlPoolLeagues' );
+  var selectboxes = document.getElementsByTagName( 'select' );
 
   // sanity check
-  if( selectboxes.length != 1 )
+  if( selectboxes.length != 4 )
   {
     var headers = document.getElementsByTagName( 'h2' );
     idx = 3;
@@ -34,7 +34,7 @@ function find_pool_select()
   }
 
   // return found box
-  return selectbox[0];
+  return selectboxes[0];
 }
 
 // functionn parsing the flags page
@@ -214,6 +214,8 @@ function challenge_page()
 
   // iteration index
   var iter = 0;
+  // temporary list
+  var new_list = new Array();
   // go through all items in checkbox
   while(selectbox.options.length > 0)
   {
@@ -221,8 +223,8 @@ function challenge_page()
     if (myCountries[selectbox.options[0].value] != "visited")
     {
       // move entry to new list
-      newList[iter] = selectbox.options[0];
-      newList[iter].text += " [" + myCountries[selectbox.options[0].value] + "]";
+      new_list[iter] = selectbox.options[0];
+      new_list[iter].text += " [" + myCountries[selectbox.options[0].value] + "]";
       iter++;
     }
     else
@@ -240,12 +242,12 @@ function challenge_page()
   debug_text += "Removed "+ rem_count + " already visited\n";
 
   // sort remaining items by divisions
-  newList.sort(sort_by_divs);
+  new_list.sort(sort_by_divs);
 
   // move items back into selectbox
-  for( iter=0; iter<newList.length; iter++ )
+  for( iter=0; iter<new_list.length; iter++ )
   {
-    selectbox.options[iter] = newList[iter];
+    selectbox.options[iter] = new_list[iter];
   }
 
   // reset selected item
@@ -256,6 +258,9 @@ function challenge_page()
       selectbox.options.selectedIndex = iter;
     }
   }
+  // select zero item
+  //selectbox.options.selectedIndex = 0;
+  //setTimeout('__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagues\',\'\')', 0);
 
   // update status display
   var textbox = document.getElementById("ctl00_ctl00_CPContent_CPMain_pnlPoolCounts");
