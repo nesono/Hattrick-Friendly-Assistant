@@ -29,7 +29,14 @@ function find_pool_select()
   {
     var headers = document.getElementsByTagName( 'h2' );
     idx = 3;
-    headers[idx].innerText = headers[idx].innerText + ' ...hfa waiting until challenge finished';
+
+    // search for browse pool href
+    browse_pool = document.getElementById( 'ctl00_ctl00_CPContent_CPSidebar_btnBrowsePool' );
+
+    if( !browse_pool )
+      headers[idx].innerText = headers[idx].innerText + ' ...hfa waiting until challenge finished';
+    else
+      headers[idx].innerText = headers[idx].innerText + ' ...press browse pool';
     return;
   }
 
@@ -181,6 +188,23 @@ function challenge_page()
   if( selectbox == null )
     return;
 
+  try {
+    var last = localStorage['flags_last_update'];
+  }
+  catch( e ) {
+    myId = document.getElementById("teamLinks");
+    team_id = myId.innerHTML.match(/.*TeamID=(\d+)\".*/,"$1")[1];
+
+    sidebar = document.getElementById( 'sidebar' );
+    sidebar.innerHTML += '<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">\
+                          <h2 class="">HFA update necessary</h2></div></div><div class="boxBody">\
+                          Please update your flags and leagues data by clicking the links below \
+                          and come back to this page.<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">\
+                          Flags</a></li><li><a id="" href="/World/Leagues/">Leagues</a></li></ul></div>\
+                          <div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>';
+    return;
+  }
+
   // fill my countries array with league table
   myCountries = JSON.parse( localStorage['divs_per_league'] );
 
@@ -258,15 +282,29 @@ function challenge_page()
       selectbox.options.selectedIndex = iter;
     }
   }
-  // select zero item
-  //selectbox.options.selectedIndex = 0;
-  //setTimeout('__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagues\',\'\')', 0);
+  //setTimeout('__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagueLevels\',\'\')', 100)
 
   // update status display
   var textbox = document.getElementById("ctl00_ctl00_CPContent_CPMain_pnlPoolCounts");
-  // tell how many countries have been removed
-  textbox.innerHTML += "<br>Removed <b>"+ rem_count +"/" + orig_len + "</b> countries.";
+  // check if everything remove but own country
+  if( rem_count == orig_len-1 )
+  {
+    // tell how many countries have been removed
+    textbox.innerHTML += "<br>Removed <b>"+ rem_count +"/" + orig_len + "</b> countries. Reloading...";
+    setTimeout('__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagues\',\'\')', 500);
+  }
+  else
+  {
+    // we have a match!
+    // select zero item
+    //selectbox.options.selectedIndex = 0;
+    //setTimeout('__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagues\',\'\')', 100);
+    // tell how many countries have been removed
+    textbox.innerHTML += "<br/>Removed <b style=\"color:red;\">"+ rem_count +"/" + orig_len + "</b> countries.";
+  }
 
+  // append reload button
+  textbox.innerHTML += ' <a id="ctl00_ctl00_CPContent_CPSidebar_btnBrowsePool" href="javascript:__doPostBack(\'ctl00$ctl00$CPContent$CPMain$ddlPoolLeagues\',\'\')">Reload</a>';
 
   // fill array with select elements
   for( iter=0; iter<selectbox.length; iter++ )
