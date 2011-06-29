@@ -188,10 +188,9 @@ function challenge_page()
   if( selectbox == null )
     return;
 
-  try {
-    var last = localStorage['flags_last_update'];
-  }
-  catch( e ) {
+  var last = localStorage['flags_last_update'];
+  if( last == undefined )
+  {
     myId = document.getElementById("teamLinks");
     team_id = myId.innerHTML.match(/.*TeamID=(\d+)\".*/,"$1")[1];
 
