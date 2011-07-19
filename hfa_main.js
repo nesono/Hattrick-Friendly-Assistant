@@ -19,7 +19,7 @@ function sort_by_divs( a, b )
 }
 
 // function to find select box
-function find_pool_select()
+function find_pool_select( show_links )
 {
   // search for pool country select box
   var selectboxes = document.getElementsByTagName( 'select' );
@@ -36,7 +36,12 @@ function find_pool_select()
     if( !browse_pool )
       headers[idx].innerText = headers[idx].innerText + ' ...hfa waiting until challenge finished';
     else
-      headers[idx].innerText = headers[idx].innerText + ' ...press browse pool';
+      headers[idx].innerText = headers[idx].innerText + ' ...hfa ready';
+
+    // show text if links need update
+    if( show_links )
+      headers[idx].innerText = headers[idx].innerText + ' FLAGS/LEAGUES NEEDS UPDATE';
+
     return;
   }
 
@@ -49,17 +54,6 @@ function flags_page()
 {
   // check if last flag information old enough
   var now = new Date();
-  //var last;
-  //try {
-  //  last = JSON.parse(localStorage['flags_last_update']);
-  //}
-  //catch( e ) {
-  //  last = new Date(0);
-  //}
-
-  //var diff = now - last;
-  //alert( 'diff: ' + diff );
-  // now we should check if the diff is too small to do an update?
 
   // get all flags
   var all_flags = document.getElementsByClassName( 'flag inner' );
@@ -120,7 +114,7 @@ function flags_page()
   // save data
   localStorage['flags_visited'] = JSON.stringify(visited);
   // save update time for clubs flags
-  localStorage['flags_last_update'] = now.toUTCString();
+  localStorage['flags_last_update'] = now.toString();
 
   //alert( 'saved flag collection at ' + localStorage['flags_last_update'] );
 
@@ -134,6 +128,9 @@ function flags_page()
 // function parsing the leagues page
 function leagues_page()
 {
+  // check if last flag information old enough
+  var now = new Date();
+
   // get the leagues table (validate me!)
   var leages_table = document.getElementsByClassName( 'indent' );
 
@@ -178,18 +175,43 @@ function leagues_page()
   else
     alert( 'saved divisions per country' )
 
+  // save update time for clubs flags
+  localStorage['leagues_last_update'] = now.toString();
 }
 
 // function handling the challenges page
 function challenge_page()
 {
-  // get first and only selectbox
-  var selectbox = find_pool_select();
-  if( selectbox == null )
-    return;
+  // init show flag
+  var show_links = false;
+  // check for last time flags were updated
+  var last_str = localStorage['flags_last_update'];
+  if( last_str == undefined )
+    show_links = true;
+  else
+  {
+    // convert to date
+    var last = new Date(last_str);
+    var now = new Date();
+    var diff = now - last;
+    if( diff > 5*24*60*60*100 )
+      show_links = true;
+  }
+  // check for last time leagues were updated
+  last_str = localStorage['leagues_last_update'];
+  if( last_str == undefined )
+    show_links = true;
+  else
+  {
+    // convert to date
+    var last = new Date(last_str);
+    var now = new Date();
+    var diff = now - last;
+    if( diff > 5*24*60*60*100 )
+      show_links = true;
+  }
 
-  var last = localStorage['flags_last_update'];
-  if( last == undefined )
+  if( show_links )
   {
     myId = document.getElementById("teamLinks");
     team_id = myId.innerHTML.match(/.*TeamID=(\d+)\".*/,"$1")[1];
@@ -201,8 +223,12 @@ function challenge_page()
                           and come back to this page.<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">\
                           Flags</a></li><li><a id="" href="/World/Leagues/">Leagues</a></li></ul></div>\
                           <div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>';
-    return;
   }
+
+  // get first and only selectbox
+  var selectbox = find_pool_select( show_links );
+  if( selectbox == null )
+    return;
 
   // fill my countries array with league table
   myCountries = JSON.parse( localStorage['divs_per_league'] );
