@@ -1,7 +1,30 @@
 <html style="height: 85px;">
-<body style="text-align: center; font-family: Helvetica, Arial, Sans Serif; font-size: 8pt; padding: 0; margin:0; height: 85px;">
+<head>
+<script>
+function toogleIcon()
+{
+  var hfa_enabled = true;
+  // get preference
+  try { var hfa_enabled = JSON.parse(localStorage['hfa_enabled']); }
+  catch (e) { }
+  hfa_enabled = !hfa_enabled;
+  if( hfa_enabled )
+    // switch icon to disabled
+    chrome.browserAction.setIcon('icon.png');
+  else
+    // switch icon to disabled
+    chrome.browserAction.setIcon('icon_disabled.png');
+  // save back preference
+  localStorage['hfa_enabled'] = JSON.stringify(hfa_enabled);
+}
+</script>
+</head>
+<body onload="javascript:toggleIcon()">
+<!-- 
+  style="text-align: center; font-family: Helvetica, Arial, Sans Serif; font-size: 8pt; padding: 0; margin:0; height: 85px;">
 <img id="logo" src="logo_green.gif"/>
 <p style="padding: 0; margin:0;">hattrick friendly assistant</p>
 <p style="padding: 0; margin:0;">www.nesono.com</p>
+ -->
 </body>
 </html>
