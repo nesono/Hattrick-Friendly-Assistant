@@ -269,7 +269,7 @@ function challenge_page()
   while(selectbox.options.length > 0)
   {
     // check if country NOT already visited
-    if (myCountries[selectbox.options[0].value] != "visited")
+    if (myCountries[selectbox.options[0].value] != "visited" || selectbox.options[0].value == 3)
     {
       // move entry to new list
       new_list[iter] = selectbox.options[0];
