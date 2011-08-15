@@ -221,11 +221,11 @@ function challenge_with_prefs( prefs )
 
   var last_flags   = localStorage['flags_last_update'];
   var last_leagues = localStorage['leagues_last_update'];
-
+  var hfa_indicator = '';
   if (hfa_enabled)
-    checkbox_txt = '<b>hfa enabled</b>';
+    hfa_indicator = '<b>ON</b>';
   else
-    checkbox_txt = '<b>hfa disabled</b>';
+    hfa_indicator = '<i>OFF</i>';
 
   if( show_links || last_flags == undefined || last_leagues == undefined )
   {
@@ -234,12 +234,11 @@ function challenge_with_prefs( prefs )
 
     sidebar = document.getElementById( 'sidebar' );
     sidebar.innerHTML += ['<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">',
-                          '<h2 class="">HFA update necessary</h2></div></div><div class="boxBody">',
+                          '<h2 class="">HFA: '+hfa_indicator+'</h2></div></div><div class="boxBody">',
                             'Please update your flags and leagues data by clicking the links below ',
                             'and come back to this page.',
                              '<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">Flags</a></li>',
                                  '<li><a id="" href="/World/Leagues/">Leagues</a></li>',
-                                  checkbox_txt,'</li>',
                              '</ul></div>',
                           '<div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>'].join('\n');
     return;
@@ -251,10 +250,9 @@ function challenge_with_prefs( prefs )
 
     sidebar = document.getElementById( 'sidebar' );
     sidebar.innerHTML += ['<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">',
-                          '<h2 class="">HFA updated</h2></div></div><div class="boxBody">',
+                          '<h2 class="">HFA: '+hfa_indicator+'</h2></div></div><div class="boxBody">',
                              '<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">Flags</a></li>',
                                  '<li><a id="" href="/World/Leagues/">Leagues</a></li>',
-                                  checkbox_txt,'</li>',
                              '</ul></div>',
                           '<div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>'].join('\n');
   }
