@@ -1,0 +1,46 @@
+<html>
+<head>
+<script>
+// function to get the preferences from local storage
+function get_prefs()
+{
+  // init preferences
+  var prefs = { hfa_enabled: true };
+  // load preferences
+  try { var prefs = JSON.parse(localStorage['prefs']); }
+  catch (e) { }
+
+  // save back preferences
+  localStorage['prefs'] = JSON.stringify(prefs);
+
+  // return result :)
+  return prefs;
+}
+
+// set icon to stored prefence value
+window.onload = function()
+{
+  var prefs = get_prefs();
+  // reset icon
+  if( prefs.hfa_enabled )
+    // switch icon to disabled
+    chrome.browserAction.setIcon({path:'icon.png'});
+  else
+    // switch icon to disabled
+    chrome.browserAction.setIcon({path:'icon_disabled.png'});
+}
+
+// the handler to pass the preferences to content script
+chrome.extension.onRequest.addListener(
+    function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request.greeting == "prefs")
+    sendResponse({prefs: get_prefs()});
+    else
+    sendResponse({}); // snub them.
+    });
+</script>
+</head>
+</html>
