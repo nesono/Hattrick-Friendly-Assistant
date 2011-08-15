@@ -166,8 +166,13 @@ function leagues_page()
     }
   }
 
+  // get current date
+  var now = new Date();
+
   // save data
   localStorage['divs_per_league'] = JSON.stringify( divs_per_league );
+  // save update time for leagues
+  localStorage['leagues_last_update'] = now.toUTCString();
 
   var header1 = document.getElementsByTagName( 'h1' );
   if( header1.length > 0 )
@@ -179,9 +184,12 @@ function leagues_page()
   localStorage['leagues_last_update'] = now.toString();
 }
 
-// function handling the challenges page
-function challenge_page()
+// function that handles callback - with passed preferences
+function challenge_with_prefs( prefs )
 {
+  // parse prefs
+  var hfa_enabled = prefs.hfa_enabled;
+
   // init show flag
   var show_links = false;
   // check for last time flags were updated
@@ -211,19 +219,48 @@ function challenge_page()
       show_links = true;
   }
 
-  if( show_links )
+  var last_flags   = localStorage['flags_last_update'];
+  var last_leagues = localStorage['leagues_last_update'];
+
+  if (hfa_enabled)
+    checkbox_txt = '<b>hfa enabled</b>';
+  else
+    checkbox_txt = '<b>hfa disabled</b>';
+
+  if( show_links || last_flags == undefined || last_leagues == undefined )
   {
     myId = document.getElementById("teamLinks");
     team_id = myId.innerHTML.match(/.*TeamID=(\d+)\".*/,"$1")[1];
 
     sidebar = document.getElementById( 'sidebar' );
-    sidebar.innerHTML += '<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">\
-                          <h2 class="">HFA update necessary</h2></div></div><div class="boxBody">\
-                          Please update your flags and leagues data by clicking the links below \
-                          and come back to this page.<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">\
-                          Flags</a></li><li><a id="" href="/World/Leagues/">Leagues</a></li></ul></div>\
-                          <div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>';
+    sidebar.innerHTML += ['<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">',
+                          '<h2 class="">HFA update necessary</h2></div></div><div class="boxBody">',
+                            'Please update your flags and leagues data by clicking the links below ',
+                            'and come back to this page.',
+                             '<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">Flags</a></li>',
+                                 '<li><a id="" href="/World/Leagues/">Leagues</a></li>',
+                                  checkbox_txt,'</li>',
+                             '</ul></div>',
+                          '<div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>'].join('\n');
+    return;
   }
+  else
+  {
+    myId = document.getElementById("teamLinks");
+    team_id = myId.innerHTML.match(/.*TeamID=(\d+)\".*/,"$1")[1];
+
+    sidebar = document.getElementById( 'sidebar' );
+    sidebar.innerHTML += ['<div class="sidebarBox"><div class="boxHead"><div class="boxLeft">',
+                          '<h2 class="">HFA updated</h2></div></div><div class="boxBody">',
+                             '<ul><li><a id="" href="/Club/Flags/?teamid="'+team_id+'">Flags</a></li>',
+                                 '<li><a id="" href="/World/Leagues/">Leagues</a></li>',
+                                  checkbox_txt,'</li>',
+                             '</ul></div>',
+                          '<div class=\'boxFooter\'><div class=\'boxLeft\'>&nbsp;</div></div></div>'].join('\n');
+  }
+
+  if( hfa_enabled == false )
+    return;
 
   // get first and only selectbox
   var selectbox = find_pool_select( show_links );
@@ -339,6 +376,13 @@ function challenge_page()
   }
 
   //alert( debug_text )
+}
+
+// function handling the challenges page
+function challenge_page()
+{
+  // query prefs from background page
+  chrome.extension.sendRequest({greeting: "prefs"}, function (response) {challenge_with_prefs(response.prefs)});
 }
 
 // switch functions by url
