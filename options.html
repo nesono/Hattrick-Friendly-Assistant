@@ -1,0 +1,53 @@
+<html>
+<head>
+<script>
+// get the preferences from local storage
+function get_prefs()
+{
+  // init preferences
+  var prefs = { hfa_enabled: true };
+  // load preferences
+  try { var prefs = JSON.parse(localStorage['prefs']); }
+  catch (e) { }
+
+  // save back preferences
+  localStorage['prefs'] = JSON.stringify(prefs);
+
+  // return result :)
+  return prefs;
+}
+
+
+// toggle enabled function
+function toggle_enabled()
+{
+  // get prefs object
+  var prefs = get_prefs();
+  // get setting from checkbox
+  prefs.hfa_enabled = document.getElementById("hfa_enabled").checked;
+  // reset icon
+  if( prefs.hfa_enabled )
+    // switch icon to disabled
+    chrome.browserAction.setIcon({path:'icon.png'});
+  else
+    // switch icon to disabled
+    chrome.browserAction.setIcon({path:'icon_disabled.png'});
+  // save back
+  localStorage['prefs'] = JSON.stringify(prefs);
+}
+
+// Make sure the checkbox checked state gets properly initialized from the
+// saved preference.
+window.onload = function()
+{
+  var prefs = get_prefs();
+  document.getElementById("hfa_enabled").checked = prefs.hfa_enabled;
+}
+
+</script>
+</head>
+<body>
+<h2>Options for Hattrick Friendly Assistant (HFA)</h2>
+Enable HFA: <input id="hfa_enabled" type="checkbox" onchange="javascript:toggle_enabled()">
+</body>
+</html>
