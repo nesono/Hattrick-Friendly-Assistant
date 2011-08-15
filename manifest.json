@@ -1,6 +1,6 @@
 {
   "name": "Hattrick Friendly Assistant",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Assisting utility to challenge rare countries for friendlies",
   "content_scripts": [
     {
@@ -8,8 +8,10 @@
       "js": ["hfa_main.js"]
     }
   ],
+  "background_page": "background.html",
   "browser_action": {
     "default_icon": "icon.png",
     "popup": "popup.html"
-  }
+  },
+  "options_page": "options.html"
 }
